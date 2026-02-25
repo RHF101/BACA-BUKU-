@@ -1,55 +1,374 @@
-<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reading Haven - Admin</title>
+    <title>Admin Panel - Reading Haven</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Firebase SDKs same -->
-    <script type="module">
-        // Same init
-    </script>
-    <script type="module" src="js/admin.js" defer></script>
+    <style>
+        .admin-section { margin: 2.5rem 0; padding: 1.5rem; background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #555; }
+        input, select, textarea { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        textarea { min-height: 180px; resize: vertical; font-family: monospace; }
+        .book-item { padding: 1rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .book-item:last-child { border-bottom: none; }
+        .btn-danger { background: #e74c3c; }
+        .btn-danger:hover { background: #c0392b; }
+        #auth-message { color: #e74c3c; text-align: center; margin: 1rem 0; }
+    </style>
 </head>
 <body>
-    <!-- Navbar same, without settings if not needed -->
-    <main>
-        <section id="dashboard">
+
+    <nav class="navbar">
+        <div class="logo">Reading Haven - Admin</div>
+        <div class="nav-links">
+            <a href="index.html">Kembali ke Home</a>
+            <button id="logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <main style="max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem;">
+        <h1>Panel Admin</h1>
+        <p id="auth-message">Memeriksa akses admin...</p>
+
+        <!-- Dashboard -->
+        <div class="admin-section">
             <h2>Dashboard</h2>
-            <p>Total Users: <span id="total-users"></span></p>
-            <p>Total Books: <span id="total-books"></span></p>
-            <p>Total Gratis: <span id="total-gratis"></span></p>
-            <p>Total Premium: <span id="total-premium"></span></p>
-        </section>
-        <section id="add-book">
-            <h2>Tambah Buku</h2>
-            <form id="book-form">
-                <input type="text" id="title" placeholder="Judul" required>
-                <input type="text" id="author" placeholder="Penulis" required>
-                <select id="category" required>
-                    <option value="gratis">Gratis</option>
-                    <option value="premium">Premium</option>
-                </select>
-                <input type="number" id="price" placeholder="Harga" disabled>
-                <select id="status" required>
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                </select>
-                <input type="checkbox" id="featured"> Featured
-                <input type="file" id="cover" accept="image/*" required>
-                <textarea id="content" placeholder="Isi Buku (HTML sederhana)" required></textarea>
-                <button type="submit">Simpan</button>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem;">
+                <div style="padding: 1.2rem; background: #f8f9fa; border-radius: 10px; text-align: center;">
+                    <strong>Total User</strong><br><span id="total-users">0</span>
+                </div>
+                <div style="padding: 1.2rem; background: #f8f9fa; border-radius: 10px; text-align: center;">
+                    <strong>Total Buku</strong><br><span id="total-books">0</span>
+                </div>
+                <div style="padding: 1.2rem; background: #f8f9fa; border-radius: 10px; text-align: center;">
+                    <strong>Buku Gratis</strong><br><span id="total-gratis">0</span>
+                </div>
+                <div style="padding: 1.2rem; background: #f8f9fa; border-radius: 10px; text-align: center;">
+                    <strong>Buku Premium</strong><br><span id="total-premium">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tambah Buku -->
+        <div class="admin-section">
+            <h2>Tambah Buku Baru</h2>
+            <form id="add-book-form">
+                <div class="form-group">
+                    <label>Judul Buku</label>
+                    <input type="text" id="title" required>
+                </div>
+                <div class="form-group">
+                    <label>Penulis</label>
+                    <input type="text" id="author" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="category" required>
+                        <option value="">Pilih kategori</option>
+                        <option value="gratis">Gratis</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                </div>
+                <div class="form-group" id="price-group" style="display:none;">
+                    <label>Harga (Rp)</label>
+                    <input type="number" id="price" min="1000" step="1000">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="status" required>
+                        <option value="draft">Draft</option>
+                        <option value="published" selected>Published</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cover Buku (gambar)</label>
+                    <input type="file" id="cover" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label>Isi Buku (HTML sederhana diperbolehkan)</label>
+                    <textarea id="content" required placeholder="Contoh: <h3>Bab 1</h3><p>Ini paragraf pertama...</p>"></textarea>
+                </div>
+                <button type="submit" class="btn">Simpan Buku</button>
             </form>
-        </section>
-        <section id="edit-books">
-            <h2>Edit Buku</h2>
+        </div>
+
+        <!-- Daftar Buku -->
+        <div class="admin-section">
+            <h2>Daftar Buku</h2>
             <div id="books-list"></div>
-        </section>
-        <section id="manage-users">
-            <h2>Manajemen User</h2>
+        </div>
+
+        <!-- Manajemen User -->
+        <div class="admin-section">
+            <h2>Manajemen Pengguna</h2>
             <div id="users-list"></div>
-        </section>
+        </div>
     </main>
+
+    <!-- ====================================================
+         Firebase + Storage + Realtime Database
+    ==================================================== -->
+    <script type="module">
+        // Import SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getDatabase, ref, get, set, remove, push, update, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+        import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
+            authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
+            databaseURL: "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
+            projectId: "rhf-shop-mafia-8d2e5",
+            storageBucket: "rhf-shop-mafia-8d2e5.firebasestorage.app",
+            messagingSenderId: "158711184948",
+            appId: "1:158711184948:web:9223f07fa6658601189461",
+            measurementId: "G-R6KN1EYMB3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
+
+        const messageEl = document.getElementById('auth-message');
+        const booksList = document.getElementById('books-list');
+        const usersList = document.getElementById('users-list');
+
+        // Cek apakah user adalah admin
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                messageEl.style.color = '#e74c3c';
+                messageEl.textContent = 'Silakan login terlebih dahulu';
+                setTimeout(() => location.href = 'login.html', 2000);
+                return;
+            }
+
+            try {
+                const userSnap = await get(ref(db, `users/${user.uid}`));
+                const userData = userSnap.val();
+
+                if (!userData || userData.role !== 'admin') {
+                    messageEl.textContent = 'Akses ditolak: Anda bukan admin';
+                    setTimeout(() => location.href = 'index.html', 2000);
+                    return;
+                }
+
+                messageEl.style.color = '#27ae60';
+                messageEl.textContent = `Selamat datang, Admin ${userData.name || 'Admin'}`;
+
+                document.getElementById('logout-btn').onclick = () => {
+                    signOut(auth).then(() => location.href = 'login.html');
+                };
+
+                loadDashboard();
+                loadBooks();
+                loadUsers();
+
+            } catch (err) {
+                messageEl.textContent = 'Gagal memeriksa hak akses: ' + err.message;
+            }
+        });
+
+        // =============================================
+        //               LOAD DASHBOARD
+        // =============================================
+        async function loadDashboard() {
+            try {
+                const usersSnap = await get(ref(db, 'users'));
+                const booksSnap = await get(ref(db, 'books'));
+
+                const users = usersSnap.val() || {};
+                const books = booksSnap.val() || {};
+
+                document.getElementById('total-users').textContent = Object.keys(users).length;
+                document.getElementById('total-books').textContent = Object.keys(books).length;
+
+                let gratis = 0, premium = 0;
+                Object.values(books).forEach(b => {
+                    if (b.category === 'gratis') gratis++;
+                    if (b.category === 'premium') premium++;
+                });
+
+                document.getElementById('total-gratis').textContent = gratis;
+                document.getElementById('total-premium').textContent = premium;
+            } catch (err) {
+                console.error('Gagal load dashboard:', err);
+            }
+        }
+
+        // =============================================
+        //               TAMBAH BUKU + UPLOAD GAMBAR
+        // =============================================
+        document.getElementById('add-book-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const title    = document.getElementById('title').value.trim();
+            const author   = document.getElementById('author').value.trim();
+            const category = document.getElementById('category').value;
+            const price    = category === 'premium' ? Number(document.getElementById('price').value) || 0 : 0;
+            const status   = document.getElementById('status').value;
+            const file     = document.getElementById('cover').files[0];
+            const content  = document.getElementById('content').value.trim();
+
+            if (!file) {
+                alert('Pilih gambar cover terlebih dahulu');
+                return;
+            }
+
+            try {
+                // Upload gambar ke Storage
+                const storagePath = `covers/\( {Date.now()}_ \){file.name}`;
+                const storageRef = sRef(storage, storagePath);
+                await uploadBytes(storageRef, file);
+                const coverURL = await getDownloadURL(storageRef);
+
+                // Simpan ke Realtime Database
+                const newBookRef = push(ref(db, 'books'));
+                await set(newBookRef, {
+                    title,
+                    author,
+                    category,
+                    price,
+                    content,
+                    coverURL,
+                    status,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+
+                alert('Buku berhasil ditambahkan!');
+                document.getElementById('add-book-form').reset();
+                document.getElementById('price-group').style.display = 'none';
+                loadBooks();
+                loadDashboard();
+
+            } catch (err) {
+                alert('Gagal menambahkan buku: ' + err.message);
+                console.error(err);
+            }
+        });
+
+        // Tampilkan input harga jika kategori premium
+        document.getElementById('category').addEventListener('change', function() {
+            document.getElementById('price-group').style.display = 
+                this.value === 'premium' ? 'block' : 'none';
+        });
+
+        // =============================================
+        //               LOAD & HAPUS BUKU
+        // =============================================
+        async function loadBooks() {
+            booksList.innerHTML = '<p>Memuat daftar buku...</p>';
+
+            try {
+                const snap = await get(ref(db, 'books'));
+                const books = snap.val() || {};
+
+                booksList.innerHTML = '';
+
+                Object.entries(books).forEach(([id, book]) => {
+                    const item = document.createElement('div');
+                    item.className = 'book-item';
+                    item.innerHTML = `
+                        <div>
+                            <strong>${book.title}</strong> 
+                            <small>(${book.category} - ${book.status})</small><br>
+                            <small>Penulis: ${book.author || '-'}</small>
+                        </div>
+                        <div>
+                            <button onclick="deleteBook('${id}')">Hapus</button>
+                        </div>
+                    `;
+                    booksList.appendChild(item);
+                });
+
+                if (Object.keys(books).length === 0) {
+                    booksList.innerHTML = '<p>Belum ada buku yang ditambahkan.</p>';
+                }
+            } catch (err) {
+                booksList.innerHTML = '<p>Gagal memuat daftar buku.</p>';
+            }
+        }
+
+        window.deleteBook = async function(id) {
+            if (!confirm('Yakin ingin menghapus buku ini?')) return;
+
+            try {
+                await remove(ref(db, `books/${id}`));
+                alert('Buku dihapus');
+                loadBooks();
+                loadDashboard();
+            } catch (err) {
+                alert('Gagal menghapus: ' + err.message);
+            }
+        };
+
+        // =============================================
+        //               LOAD & MANAJEMEN USER
+        // =============================================
+        async function loadUsers() {
+            usersList.innerHTML = '<p>Memuat daftar pengguna...</p>';
+
+            try {
+                const snap = await get(ref(db, 'users'));
+                const users = snap.val() || {};
+
+                usersList.innerHTML = '';
+
+                Object.entries(users).forEach(([uid, u]) => {
+                    const item = document.createElement('div');
+                    item.className = 'book-item';
+                    item.innerHTML = `
+                        <div>
+                            <strong>${u.name || 'Tanpa nama'}</strong> 
+                            <small>(${u.email})</small><br>
+                            <small>Role: ${u.role || 'user'}</small>
+                        </div>
+                        <div>
+                            <button onclick="deleteUser('${uid}')">Hapus</button>
+                            <button onclick="toggleRole('\( {uid}', ' \){u.role || 'user'}')">
+                                ${u.role === 'admin' ? 'Jadikan User' : 'Jadikan Admin'}
+                            </button>
+                        </div>
+                    `;
+                    usersList.appendChild(item);
+                });
+
+                if (Object.keys(users).length === 0) {
+                    usersList.innerHTML = '<p>Belum ada pengguna terdaftar.</p>';
+                }
+            } catch (err) {
+                usersList.innerHTML = '<p>Gagal memuat daftar pengguna.</p>';
+            }
+        }
+
+        window.deleteUser = async function(uid) {
+            if (!confirm('Yakin menghapus akun pengguna ini?')) return;
+            try {
+                await remove(ref(db, `users/${uid}`));
+                alert('Pengguna dihapus');
+                loadUsers();
+                loadDashboard();
+            } catch (err) {
+                alert('Gagal menghapus: ' + err.message);
+            }
+        };
+
+        window.toggleRole = async function(uid, currentRole) {
+            const newRole = currentRole === 'admin' ? 'user' : 'admin';
+            if (!confirm(`Ubah role menjadi ${newRole}?`)) return;
+
+            try {
+                await update(ref(db, `users/${uid}`), { role: newRole });
+                alert(`Role diubah menjadi ${newRole}`);
+                loadUsers();
+            } catch (err) {
+                alert('Gagal mengubah role: ' + err.message);
+            }
+        };
+    </script>
 </body>
-</html>
+    </html>
