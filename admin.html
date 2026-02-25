@@ -232,11 +232,10 @@
     const contentFile = document.getElementById('book-content-file').files[0];
     const description = document.getElementById('description').value.trim();
 
-    // Pengecekan ketat
     if (!title) return showError('Judul buku wajib diisi');
     if (!author) return showError('Penulis wajib diisi');
     if (!category) return showError('Pilih kategori buku');
-    if (!status) return showError('Pilih status buku (Draft atau Published)');
+    if (!status || status === '') return showError('Pilih status buku (Draft atau Published)');
     if (!coverURL || !coverURL.startsWith('https://')) return showError('URL cover harus HTTPS dan valid');
     if (!contentFile) return showError('Pilih file isi buku (.html)');
     if (!description) return showError('Deskripsi singkat wajib diisi');
