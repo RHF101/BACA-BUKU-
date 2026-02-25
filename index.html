@@ -1,102 +1,87 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reading Haven - Home</title>
+    <title>Reading Haven - Koleksi Buku</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Firebase SDKs (Modular via CDN) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, get, set, push, update, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
-            authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
-            databaseURL: "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
-            projectId: "rhf-shop-mafia-8d2e5",
-            storageBucket: "rhf-shop-mafia-8d2e5.firebasestorage.app",
-            messagingSenderId: "158711184948",
-            appId: "1:158711184948:web:9223f07fa6658601189461",
-            measurementId: "G-R6KN1EYMB3"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        window.auth = getAuth(app);
-        window.db = getDatabase(app);
-        window.storage = getStorage(app);
-    </script>
-    <script type="module" src="js/script.js" defer></script>
 </head>
 <body>
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="logo">Reading Haven</div>
         <div class="nav-links">
             <a href="index.html">Home</a>
-            <a href="admin.html" id="admin-link" style="display: none;">Admin</a>
-            <button id="login-btn">Login</button>
-            <button id="logout-btn" style="display: none;">Logout</button>
-            <div class="settings-icon" id="settings-icon">⚙</div>
+            <a href="login.html" id="login-link">Login</a>
+            <a href="#" id="logout-link" style="display: none;">Logout</a>
+            <!-- Jika nanti ada admin link -->
+            <!-- <a href="admin.html" id="admin-link" style="display: none;">Admin</a> -->
         </div>
     </nav>
 
-    <div class="settings-panel" id="settings-panel">
-        <h3>Pengaturan</h3>
-        <div>
-            <label>Ukuran Font:</label>
-            <select id="font-size">
-                <option value="small">Small</option>
-                <option value="medium" selected>Medium</option>
-                <option value="large">Large</option>
-            </select>
-        </div>
-        <div>
-            <label>Mode Fokus:</label>
-            <input type="checkbox" id="focus-mode">
-        </div>
-        <div>
-            <label>Suara Latar:</label>
-            <input type="checkbox" id="background-sound-toggle">
-        </div>
-        <div id="sound-options" style="display: none;">
-            <select id="sound-choice">
-                <option value="morning-birds">Burung Pagi</option>
-                <option value="gentle-wind">Angin Lembut</option>
-                <option value="soft-leaves">Daun Halus</option>
-            </select>
-            <label>Volume:</label>
-            <input type="range" id="volume-slider" min="0" max="100" value="50">
-        </div>
-    </div>
-
-    <audio id="morning-birds" loop preload="auto" src="sounds/morning-birds.mp3"></audio>
-    <audio id="gentle-wind" loop preload="auto" src="sounds/gentle-wind.mp3"></audio>
-    <audio id="soft-leaves" loop preload="auto" src="sounds/soft-leaves.mp3"></audio>
-
+    <!-- Main Content -->
     <main>
         <section id="free-collection">
             <h2>📖 Koleksi Gratis</h2>
-            <div class="grid"></div>
+            <div class="grid" id="free-grid">
+                <!-- Buku gratis akan dimuat di sini via JS nanti -->
+                <p class="placeholder">Sedang memuat koleksi gratis...</p>
+            </div>
         </section>
+
         <section id="premium-collection">
             <h2>💎 Koleksi Premium</h2>
-            <div class="grid"></div>
+            <div class="grid" id="premium-grid">
+                <!-- Buku premium akan dimuat di sini via JS nanti -->
+                <p class="placeholder">Sedang memuat koleksi premium...</p>
+            </div>
         </section>
     </main>
 
-    <div id="login-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Login/Register</h2>
-            <input type="text" id="name" placeholder="Name (for register)">
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="password" placeholder="Password">
-            <button id="login-submit">Login</button>
-            <button id="register-submit">Register</button>
-        </div>
-    </div>
+    <!-- Scripts -->
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module">
+        import { auth } from './js/firebase.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+        // Pantau status login untuk update navbar
+        onAuthStateChanged(auth, user => {
+            const loginLink = document.getElementById('login-link');
+            const logoutLink = document.getElementById('logout-link');
+            // const adminLink = document.getElementById('admin-link'); // jika ada
+
+            if (user) {
+                loginLink.style.display = 'none';
+                logoutLink.style.display = 'inline-block';
+                // Jika user admin, tampilkan link admin
+                // adminLink.style.display = 'inline-block'; // uncomment jika perlu
+            } else {
+                loginLink.style.display = 'inline-block';
+                logoutLink.style.display = 'none';
+                // adminLink.style.display = 'none';
+            }
+        });
+
+        // Logout handler
+        document.getElementById('logout-link').addEventListener('click', e => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                location.href = 'login.html';
+            });
+        });
+    </script>
+
+    <!-- Optional: Script untuk load buku nanti (bisa ditambah di js/script.js) -->
+    <!-- <script type="module" src="js/script.js" defer></script> -->
+
+    <!-- CSS tambahan sederhana untuk placeholder -->
+    <style>
+        .placeholder {
+            text-align: center;
+            color: #8c9a82;
+            font-style: italic;
+            padding: 2rem;
+        }
+    </style>
 </body>
-      </html>
+</html>
