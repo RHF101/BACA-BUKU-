@@ -1,0 +1,55 @@
+<!-- admin.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Haven - Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDKs same -->
+    <script type="module">
+        // Same init
+    </script>
+    <script type="module" src="js/admin.js" defer></script>
+</head>
+<body>
+    <!-- Navbar same, without settings if not needed -->
+    <main>
+        <section id="dashboard">
+            <h2>Dashboard</h2>
+            <p>Total Users: <span id="total-users"></span></p>
+            <p>Total Books: <span id="total-books"></span></p>
+            <p>Total Gratis: <span id="total-gratis"></span></p>
+            <p>Total Premium: <span id="total-premium"></span></p>
+        </section>
+        <section id="add-book">
+            <h2>Tambah Buku</h2>
+            <form id="book-form">
+                <input type="text" id="title" placeholder="Judul" required>
+                <input type="text" id="author" placeholder="Penulis" required>
+                <select id="category" required>
+                    <option value="gratis">Gratis</option>
+                    <option value="premium">Premium</option>
+                </select>
+                <input type="number" id="price" placeholder="Harga" disabled>
+                <select id="status" required>
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                </select>
+                <input type="checkbox" id="featured"> Featured
+                <input type="file" id="cover" accept="image/*" required>
+                <textarea id="content" placeholder="Isi Buku (HTML sederhana)" required></textarea>
+                <button type="submit">Simpan</button>
+            </form>
+        </section>
+        <section id="edit-books">
+            <h2>Edit Buku</h2>
+            <div id="books-list"></div>
+        </section>
+        <section id="manage-users">
+            <h2>Manajemen User</h2>
+            <div id="users-list"></div>
+        </section>
+    </main>
+</body>
+</html>
