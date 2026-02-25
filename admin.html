@@ -188,7 +188,7 @@
       font-weight: 500;
     }
 
-    .file-note {
+    .note {
       font-size: 0.85rem;
       color: #777;
       margin-top: 0.4rem;
@@ -254,17 +254,17 @@
       </div>
       <div>
         <label>URL Cover Buku (HTTPS)</label>
-        <input type="url" id="cover-url" placeholder="https://i.imgur.com/xxxxxx.jpg" required>
-        <div class="file-note">Upload gambar ke Imgur, Postimages, atau GitHub, lalu paste link direct-nya di sini</div>
+        <input type="url" id="cover-url" placeholder="https://i.imgur.com/xxxxxx.jpg atau https://raw.githubusercontent.com/..." required>
+        <div class="note">Ambil dari Imgur, Postimages, GitHub Raw, atau situs lain yang support HTTPS</div>
+      </div>
+      <div data-full>
+        <label>URL Isi Buku (HTML - HTTPS)</label>
+        <input type="url" id="content-url" placeholder="https://raw.githubusercontent.com/rhf101/BACA-BUKU-/main/contents/anakbintang.html" required>
+        <div class="note">Upload file .html ke GitHub repo kamu, klik Raw → copy link-nya</div>
       </div>
       <div data-full>
         <label>Deskripsi Singkat</label>
         <textarea id="description" rows="4" placeholder="Ringkasan buku untuk halaman detail" required></textarea>
-      </div>
-      <div data-full>
-        <label>Isi Buku Lengkap (upload file)</label>
-        <input type="file" id="book-content-file" accept=".txt,.md,.html,.htm" required>
-        <div class="file-note">Format: .txt, .md, .html (maks 5MB direkomendasikan)</div>
       </div>
       <div data-full style="text-align:right; margin-top:1.5rem;">
         <p id="book-message"></p>
@@ -288,7 +288,6 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getDatabase, ref, get, set, remove, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
-  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
@@ -304,7 +303,6 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getDatabase(app);
-  const storage = getStorage(app);
 
   const statusEl = document.getElementById('status');
   const bookMessage = document.getElementById('book-message');
@@ -338,7 +336,6 @@
     loadUsers();
   });
 
-  // Dashboard
   async function loadDashboard() {
     const usersSnap = await get(ref(db, 'users'));
     const booksSnap = await get(ref(db, 'books'));
@@ -359,7 +356,7 @@
     document.getElementById('premium').textContent = p;
   }
 
-  // Submit form - pakai URL HTTPS untuk cover
+  // Submit form - semua pakai URL HTTPS
   document.getElementById('book-form').addEventListener('submit', async e => {
     e.preventDefault();
 
@@ -372,36 +369,23 @@
     const price       = category === 'premium' ? Number(document.getElementById('price').value) || 0 : 0;
     const status      = document.getElementById('status').value;
     const coverURL    = document.getElementById('cover-url').value.trim();
-    const contentFile = document.getElementById('book-content-file').files[0];
+    const contentURL  = document.getElementById('content-url').value.trim();
     const description = document.getElementById('description').value.trim();
 
-    if (!title || !author || !category || !coverURL || !contentFile || !description) {
+    if (!title || !author || !category || !coverURL || !contentURL || !description) {
       bookMessage.style.color = 'var(--danger)';
       bookMessage.textContent = 'Lengkapi semua field';
       return;
     }
 
-    if (!coverURL.startsWith('https://')) {
+    if (!coverURL.startsWith('https://') || !contentURL.startsWith('https://')) {
       bookMessage.style.color = 'var(--danger)';
-      bookMessage.textContent = 'URL cover harus HTTPS dan valid';
+      bookMessage.textContent = 'URL cover dan isi buku harus HTTPS dan valid';
       return;
     }
 
     try {
-      bookMessage.textContent = 'Mengupload isi buku...';
-      const contentName = `\( {Date.now()}_content_ \){contentFile.name.replace(/\s+/g, '_')}`;
-      const contentStorageRef = sRef(storage, `contents/${contentName}`);
-      await uploadBytes(contentStorageRef, contentFile);
-
-      bookMessage.textContent = 'Membaca isi file...';
-      const contentText = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = e => resolve(e.target.result);
-        reader.onerror = reject;
-        reader.readAsText(contentFile);
-      });
-
-      bookMessage.textContent = 'Menyimpan ke database...';
+      bookMessage.textContent = 'Menyimpan buku ke database...';
       const newBookRef = push(ref(db, 'books'));
       await set(newBookRef, {
         title,
@@ -409,8 +393,8 @@
         category,
         price,
         description,
-        content: contentText,
-        coverURL,  // langsung pakai URL HTTPS
+        contentURL,  // link ke file HTML
+        coverURL,    // link ke gambar
         status,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
@@ -467,16 +451,15 @@
     loadDashboard();
   };
 
-  // Load user sederhana (bisa dikembangkan)
+  // Load user (sederhana)
   async function loadUsers() {
     userList.innerHTML = '<p style="color:#999">Memuat daftar pengguna...</p>';
     // Kode loadUsers bisa ditambahkan kalau perlu
   }
 
-  // Inisialisasi load
   loadBooks();
   loadUsers();
 </script>
 
 </body>
-          </html>
+</html>
