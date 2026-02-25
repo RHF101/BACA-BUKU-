@@ -1,21 +1,24 @@
-<!-- read.html -->
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reading Haven - Baca</title>
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Firebase SDKs same -->
-    <script type="module">
-        // Same init
-    </script>
-    <script type="module" src="js/script.js" defer></script>
-</head>
-<body>
-    <!-- Navbar and settings -->
-    <main class="reading-layout">
-        <div id="content"></div>
-    </main>
-</body>
-</html>
+const bookSnap = await get(ref(db, `books/${bookId}`));
+const book = bookSnap.val();
+
+if (!book) {
+  document.getElementById('content').innerHTML = '<p>Buku tidak ditemukan</p>';
+  return;
+}
+
+if (book.category === 'gratis') {
+  document.getElementById('content').innerHTML = book.content || '<p>Isi buku kosong</p>';
+} else {
+  // Cek login & pembelian
+  if (!user) {
+    document.getElementById('content').innerHTML = '<p style="color:red">Login dulu untuk membaca buku premium</p>';
+  } else {
+    const userSnap = await get(ref(db, `users/${user.uid}`));
+    const userData = userSnap.val();
+    if (userData.purchasedBooks && userData.purchasedBooks[bookId]) {
+      document.getElementById('content').innerHTML = book.content || '<p>Isi buku kosong</p>';
+    } else {
+      document.getElementById('content').innerHTML = '<p style="color:red">Beli buku ini untuk membaca isi lengkap</p>';
+    }
+  }
+}
