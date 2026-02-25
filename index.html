@@ -14,7 +14,6 @@
             <a href="index.html">Home</a>
             <a href="login.html" id="login-link">Login</a>
             <a href="#" id="logout-link" style="display: none;">Logout</a>
-            <!-- Jika nanti ada admin link -->
             <!-- <a href="admin.html" id="admin-link" style="display: none;">Admin</a> -->
         </div>
     </nav>
@@ -24,7 +23,6 @@
         <section id="free-collection">
             <h2>📖 Koleksi Gratis</h2>
             <div class="grid" id="free-grid">
-                <!-- Buku gratis akan dimuat di sini via JS nanti -->
                 <p class="placeholder">Sedang memuat koleksi gratis...</p>
             </div>
         </section>
@@ -32,56 +30,106 @@
         <section id="premium-collection">
             <h2>💎 Koleksi Premium</h2>
             <div class="grid" id="premium-grid">
-                <!-- Buku premium akan dimuat di sini via JS nanti -->
                 <p class="placeholder">Sedang memuat koleksi premium...</p>
             </div>
         </section>
     </main>
 
-    <!-- Scripts -->
-    <script type="module" src="js/firebase.js"></script>
+    <!-- Firebase + Auth + Database langsung di sini -->
     <script type="module">
-        import { auth } from './js/firebase.js';
-        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        // Import SDK yang dibutuhkan
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-        // Pantau status login untuk update navbar
+        // Config Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
+            authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
+            databaseURL: "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
+            projectId: "rhf-shop-mafia-8d2e5",
+            storageBucket: "rhf-shop-mafia-8d2e5.firebasestorage.app",
+            messagingSenderId: "158711184948",
+            appId: "1:158711184948:web:9223f07fa6658601189461",
+            measurementId: "G-R6KN1EYMB3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // Update navbar berdasarkan status login
         onAuthStateChanged(auth, user => {
             const loginLink = document.getElementById('login-link');
             const logoutLink = document.getElementById('logout-link');
-            // const adminLink = document.getElementById('admin-link'); // jika ada
 
             if (user) {
                 loginLink.style.display = 'none';
                 logoutLink.style.display = 'inline-block';
-                // Jika user admin, tampilkan link admin
-                // adminLink.style.display = 'inline-block'; // uncomment jika perlu
             } else {
                 loginLink.style.display = 'inline-block';
                 logoutLink.style.display = 'none';
-                // adminLink.style.display = 'none';
             }
         });
 
-        // Logout handler
+        // Handler logout
         document.getElementById('logout-link').addEventListener('click', e => {
             e.preventDefault();
             signOut(auth).then(() => {
                 location.href = 'login.html';
             });
         });
-    </script>
 
-    <!-- Optional: Script untuk load buku nanti (bisa ditambah di js/script.js) -->
-    <!-- <script type="module" src="js/script.js" defer></script> -->
+        // Load buku dari Realtime Database
+        async function loadBooks() {
+            const freeGrid = document.getElementById('free-grid');
+            const premiumGrid = document.getElementById('premium-grid');
 
-    <!-- CSS tambahan sederhana untuk placeholder -->
-    <style>
-        .placeholder {
-            text-align: center;
-            color: #8c9a82;
-            font-style: italic;
-            padding: 2rem;
+            freeGrid.innerHTML = '';
+            premiumGrid.innerHTML = '';
+
+            try {
+                const snapshot = await get(ref(db, 'books'));
+                const books = snapshot.val() || {};
+
+                let hasFree = false;
+                let hasPremium = false;
+
+                Object.entries(books).forEach(([id, book]) => {
+                    if (book.status !== 'published') return;
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <img src="\( {book.coverURL || 'https://via.placeholder.com/280x340?text=Cover'}" alt=" \){book.title}">
+                        <div class="card-content">
+                            <h3>${book.title}</h3>
+                            <p>${book.author || 'Tidak diketahui'}</p>
+                            ${book.category === 'gratis' 
+                                ? '<span class="label-gratis">Gratis</span><a href="read.html?id=' + id + '" class="btn">Baca Sekarang</a>'
+                                : '<p>Rp ' + (book.price || 0).toLocaleString('id-ID') + '</p><a href="detail.html?id=' + id + '" class="btn">Lihat Detail</a>'}
+                        </div>
+                    `;
+
+                    if (book.category === 'gratis') {
+                        freeGrid.appendChild(card);
+                        hasFree = true;
+                    } else if (book.category === 'premium') {
+                        premiumGrid.appendChild(card);
+                        hasPremium = true;
+                    }
+                });
+
+                if (!hasFree) freeGrid.innerHTML = '<p class="placeholder">Belum ada buku gratis yang tersedia</p>';
+                if (!hasPremium) premiumGrid.innerHTML = '<p class="placeholder">Belum ada buku premium yang tersedia</p>';
+            } catch (err) {
+                console.error("Gagal memuat buku:", err);
+                freeGrid.innerHTML = premiumGrid.innerHTML = '<p class="placeholder">Gagal memuat koleksi. Coba refresh halaman.</p>';
+            }
         }
-    </style>
+
+        // Jalankan load buku setelah halaman siap
+        window.addEventListener('load', loadBooks);
+    </script>
 </body>
 </html>
