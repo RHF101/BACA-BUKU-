@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
     <nav class="navbar">
         <div class="logo">Reading Haven</div>
         <div class="nav-links">
-            <a href="index.html">Home</a>
+            <a href="index.html">Kembali ke Home</a>
         </div>
     </nav>
 
@@ -21,80 +22,171 @@
             <!-- Form Login -->
             <form id="login-form" class="auth-form">
                 <h2>Login</h2>
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit">Login</button>
+                <input type="email" id="email" placeholder="Email" required autocomplete="email">
+                <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+                <button type="submit">Masuk</button>
             </form>
 
-            <!-- Form Register -->
+            <div style="text-align:center; margin: 1.5rem 0; color:#888; font-size:0.95rem;">
+                ─────────────── atau ───────────────
+            </div>
+
+            <!-- Form Daftar -->
             <form id="register-form" class="auth-form">
                 <h2>Buat Akun Baru</h2>
-                <input type="text" id="name" placeholder="Nama Lengkap" required>
-                <input type="email" id="reg-email" placeholder="Email" required>
-                <input type="password" id="reg-password" placeholder="Password (min 6 karakter)" required>
+                <input type="text" id="name" placeholder="Nama Lengkap" required autocomplete="name">
+                <input type="email" id="reg-email" placeholder="Email" required autocomplete="email">
+                <input type="password" id="reg-password" placeholder="Password (minimal 6 karakter)" required autocomplete="new-password">
                 <button type="submit">Daftar</button>
             </form>
 
-            <p id="auth-message"></p>
-
-            <p style="margin-top: 2rem; text-align: center;">
-                Sudah punya akun? Gunakan form login di atas.<br>
-                Belum punya? Daftar sekarang.
-            </p>
+            <p id="auth-message" style="text-align:center; min-height:1.8rem; margin-top:1.5rem; font-weight:500;"></p>
         </div>
     </main>
 
-    <!-- Scripts -->
-    <script type="module" src="js/firebase.js"></script>
+    <!-- ====================================================
+         Firebase + Authentication + Realtime Database
+         Semua inisialisasi dilakukan langsung di sini
+    ==================================================== -->
     <script type="module">
-        import { initAuth } from './js/auth.js';
-        initAuth();
+        // Import SDK yang dibutuhkan
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+        import {
+            getDatabase,
+            ref,
+            set,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        // Konfigurasi Firebase (project Anda)
+        const firebaseConfig = {
+            apiKey:            "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
+            authDomain:        "rhf-shop-mafia-8d2e5.firebaseapp.com",
+            databaseURL:       "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
+            projectId:         "rhf-shop-mafia-8d2e5",
+            storageBucket:     "rhf-shop-mafia-8d2e5.firebasestorage.app",
+            messagingSenderId: "158711184948",
+            appId:             "1:158711184948:web:9223f07fa6658601189461",
+            measurementId:     "G-R6KN1EYMB3"
+        };
+
+        // Inisialisasi Firebase
+        const app  = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db   = getDatabase(app);
+
+        const messageEl = document.getElementById('auth-message');
+
+        // =============================================
+        //                  LOGIN
+        // =============================================
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email    = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            messageEl.style.color = '#e74c3c';
+            messageEl.textContent = 'Memproses login...';
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+
+                messageEl.style.color = '#27ae60';
+                messageEl.textContent = 'Login berhasil! Mengarahkan ke halaman utama...';
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1800);
+            } catch (error) {
+                let msg = 'Terjadi kesalahan';
+
+                if (error.code === 'auth/wrong-password') {
+                    msg = 'Kata sandi salah';
+                } else if (error.code === 'auth/user-not-found') {
+                    msg = 'Email tidak terdaftar';
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = 'Format email tidak valid';
+                } else if (error.code === 'auth/too-many-requests') {
+                    msg = 'Terlalu banyak percobaan. Coba lagi nanti';
+                } else {
+                    msg = error.message;
+                }
+
+                messageEl.textContent = msg;
+            }
+        });
+
+        // =============================================
+        //                 DAFTAR (REGISTER)
+        // =============================================
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const name     = document.getElementById('name').value.trim();
+            const email    = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+
+            if (name.length < 2) {
+                messageEl.style.color = '#e74c3c';
+                messageEl.textContent = 'Nama minimal 2 karakter';
+                return;
+            }
+
+            messageEl.style.color = '#e74c3c';
+            messageEl.textContent = 'Memproses pendaftaran...';
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Simpan data user ke Realtime Database
+                await set(ref(db, 'users/' + user.uid), {
+                    name: name,
+                    email: email,
+                    role: 'user',
+                    purchasedBooks: {},
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+
+                messageEl.style.color = '#27ae60';
+                messageEl.textContent = 'Akun berhasil dibuat! Silakan login di atas.';
+
+            } catch (error) {
+                let msg = 'Terjadi kesalahan';
+
+                if (error.code === 'auth/email-already-in-use') {
+                    msg = 'Email sudah terdaftar';
+                } else if (error.code === 'auth/weak-password') {
+                    msg = 'Kata sandi terlalu lemah (minimal 6 karakter)';
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = 'Format email tidak valid';
+                } else {
+                    msg = error.message;
+                }
+
+                messageEl.textContent = msg;
+            }
+        });
+
+        // Optional: Jika user sudah login, arahkan ke home
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Jika sudah login tapi masih di halaman login → redirect
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1200);
+            }
+        });
     </script>
 
-    <style>
-        .auth-page {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 80vh;
-            padding: 2rem;
-        }
-        .auth-container {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 500px;
-            width: 100%;
-        }
-        .auth-form {
-            margin: 2rem 0;
-        }
-        .auth-form h2 {
-            margin-bottom: 1rem;
-            color: #8c9a82;
-        }
-        input, button {
-            width: 100%;
-            padding: 0.9rem;
-            margin: 0.8rem 0;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            font-size: 1rem;
-        }
-        button {
-            background: #a7b39f;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #8c9a82;
-        }
-        #auth-message {
-            text-align: center;
-            margin-top: 1rem;
-        }
-    </style>
 </body>
 </html>
