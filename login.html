@@ -1,192 +1,332 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Daftar - Reading Haven</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Masuk / Daftar — Reading Haven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #f9f7f3;
+      --card:      #ffffff;
+      --text:      #2d2a26;
+      --text-light:#6b665f;
+      --accent:    #a8b5a2;
+      --accent-dk: #8a9a84;
+      --border:    rgba(168,181,162,0.18);
+      --shadow:    0 10px 38px rgba(0,0,0,0.07);
+      --radius:    16px;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+
+    .container {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dk) 100%);
+      color: white;
+      padding: 2.8rem 2rem 2rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 0.98rem;
+    }
+
+    .form-wrapper {
+      padding: 2.2rem 2rem 2.8rem;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 1.8rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 1rem 0;
+      text-align: center;
+      font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .tab.active {
+      color: var(--accent-dk);
+      border-bottom: 3px solid var(--accent-dk);
+    }
+
+    .form-content {
+      display: none;
+    }
+
+    .form-content.active {
+      display: block;
+    }
+
+    .field {
+      margin-bottom: 1.4rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.92rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.95rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent-dk);
+      box-shadow: 0 0 0 3px rgba(168,181,162,0.15);
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: var(--accent-dk);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.02rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-top: 0.8rem;
+    }
+
+    button:hover {
+      background: #7a8a72;
+      transform: translateY(-1px);
+    }
+
+    .message {
+      text-align: center;
+      margin: 1.2rem 0;
+      font-size: 0.95rem;
+      min-height: 1.4rem;
+    }
+
+    .error   { color: #c0392b; }
+    .success { color: #27ae60; }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--text-light);
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      color: var(--accent-dk);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .form-wrapper { padding: 2rem 1.5rem; }
+      .header { padding: 2.2rem 1.5rem 1.8rem; }
+    }
+  </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">Reading Haven</div>
-        <div class="nav-links">
-            <a href="index.html">Kembali ke Home</a>
+<div class="container">
+  <div class="header">
+    <h1>Reading Haven</h1>
+    <p>Masuk atau buat akun baru untuk melanjutkan</p>
+  </div>
+
+  <div class="form-wrapper">
+    <div class="tabs">
+      <div class="tab active" data-tab="login">Masuk</div>
+      <div class="tab" data-tab="register">Daftar</div>
+    </div>
+
+    <!-- Form Login -->
+    <div class="form-content active" id="login">
+      <form id="login-form">
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="nama@contoh.com" required autocomplete="email">
         </div>
-    </nav>
-
-    <main class="auth-page">
-        <div class="auth-container">
-            <h1>Masuk atau Daftar</h1>
-
-            <!-- Form Login -->
-            <form id="login-form" class="auth-form">
-                <h2>Login</h2>
-                <input type="email" id="email" placeholder="Email" required autocomplete="email">
-                <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
-                <button type="submit">Masuk</button>
-            </form>
-
-            <div style="text-align:center; margin: 1.5rem 0; color:#888; font-size:0.95rem;">
-                ─────────────── atau ───────────────
-            </div>
-
-            <!-- Form Daftar -->
-            <form id="register-form" class="auth-form">
-                <h2>Buat Akun Baru</h2>
-                <input type="text" id="name" placeholder="Nama Lengkap" required autocomplete="name">
-                <input type="email" id="reg-email" placeholder="Email" required autocomplete="email">
-                <input type="password" id="reg-password" placeholder="Password (minimal 6 karakter)" required autocomplete="new-password">
-                <button type="submit">Daftar</button>
-            </form>
-
-            <p id="auth-message" style="text-align:center; min-height:1.8rem; margin-top:1.5rem; font-weight:500;"></p>
+        <div class="field">
+          <label>Kata Sandi</label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
         </div>
-    </main>
+        <button type="submit">Masuk</button>
+      </form>
+    </div>
 
-    <!-- ====================================================
-         Firebase + Authentication + Realtime Database
-         Semua inisialisasi dilakukan langsung di sini
-    ==================================================== -->
-    <script type="module">
-        // Import SDK yang dibutuhkan
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-        import {
-            getAuth,
-            signInWithEmailAndPassword,
-            createUserWithEmailAndPassword,
-            onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    <!-- Form Register -->
+    <div class="form-content" id="register">
+      <form id="register-form">
+        <div class="field">
+          <label>Nama Lengkap</label>
+          <input type="text" id="name" placeholder="Nama Anda" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="reg-email" placeholder="nama@contoh.com" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label>Kata Sandi</label>
+          <input type="password" id="reg-password" placeholder="Minimal 6 karakter" required autocomplete="new-password">
+        </div>
+        <button type="submit">Buat Akun</button>
+      </form>
+    </div>
 
-        import {
-            getDatabase,
-            ref,
-            set,
-            serverTimestamp
-        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+    <p class="message" id="auth-message"></p>
 
-        // Konfigurasi Firebase (project Anda)
-        const firebaseConfig = {
-            apiKey:            "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
-            authDomain:        "rhf-shop-mafia-8d2e5.firebaseapp.com",
-            databaseURL:       "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
-            projectId:         "rhf-shop-mafia-8d2e5",
-            storageBucket:     "rhf-shop-mafia-8d2e5.firebasestorage.app",
-            messagingSenderId: "158711184948",
-            appId:             "1:158711184948:web:9223f07fa6658601189461",
-            measurementId:     "G-R6KN1EYMB3"
-        };
+    <a href="index.html" class="back-link">← Kembali ke beranda</a>
+  </div>
+</div>
 
-        // Inisialisasi Firebase
-        const app  = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db   = getDatabase(app);
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getDatabase, ref, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-        const messageEl = document.getElementById('auth-message');
+  const firebaseConfig = {
+    apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
+    authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
+    databaseURL: "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
+    projectId: "rhf-shop-mafia-8d2e5",
+    storageBucket: "rhf-shop-mafia-8d2e5.firebasestorage.app",
+    messagingSenderId: "158711184948",
+    appId: "1:158711184948:web:9223f07fa6658601189461",
+    measurementId: "G-R6KN1EYMB3"
+  };
 
-        // =============================================
-        //                  LOGIN
-        // =============================================
-        document.getElementById('login-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getDatabase(app);
 
-            const email    = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
+  const message = document.getElementById('auth-message');
 
-            messageEl.style.color = '#e74c3c';
-            messageEl.textContent = 'Memproses login...';
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
 
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
+      document.querySelectorAll('.form-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(tab.dataset.tab).classList.add('active');
 
-                messageEl.style.color = '#27ae60';
-                messageEl.textContent = 'Login berhasil! Mengarahkan ke halaman utama...';
+      message.textContent = '';
+    });
+  });
 
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1800);
-            } catch (error) {
-                let msg = 'Terjadi kesalahan';
+  // Login handler
+  document.getElementById('login-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    message.className = 'message';
+    message.textContent = 'Memproses...';
 
-                if (error.code === 'auth/wrong-password') {
-                    msg = 'Kata sandi salah';
-                } else if (error.code === 'auth/user-not-found') {
-                    msg = 'Email tidak terdaftar';
-                } else if (error.code === 'auth/invalid-email') {
-                    msg = 'Format email tidak valid';
-                } else if (error.code === 'auth/too-many-requests') {
-                    msg = 'Terlalu banyak percobaan. Coba lagi nanti';
-                } else {
-                    msg = error.message;
-                }
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
 
-                messageEl.textContent = msg;
-            }
-        });
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      message.className = 'message success';
+      message.textContent = 'Berhasil masuk! Mengarahkan...';
+      setTimeout(() => location.href = 'index.html', 1400);
+    } catch (err) {
+      message.className = 'message error';
+      let txt = 'Terjadi kesalahan';
+      if (err.code === 'auth/wrong-password') txt = 'Kata sandi salah';
+      else if (err.code === 'auth/user-not-found') txt = 'Akun tidak ditemukan';
+      else if (err.code === 'auth/invalid-email') txt = 'Email tidak valid';
+      else txt = err.message;
+      message.textContent = txt;
+    }
+  });
 
-        // =============================================
-        //                 DAFTAR (REGISTER)
-        // =============================================
-        document.getElementById('register-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
+  // Register handler
+  document.getElementById('register-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    message.className = 'message';
+    message.textContent = 'Memproses pendaftaran...';
 
-            const name     = document.getElementById('name').value.trim();
-            const email    = document.getElementById('reg-email').value.trim();
-            const password = document.getElementById('reg-password').value;
+    const name     = document.getElementById('name').value.trim();
+    const email    = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
 
-            if (name.length < 2) {
-                messageEl.style.color = '#e74c3c';
-                messageEl.textContent = 'Nama minimal 2 karakter';
-                return;
-            }
+    if (name.length < 2) {
+      message.className = 'message error';
+      message.textContent = 'Nama minimal 2 karakter';
+      return;
+    }
 
-            messageEl.style.color = '#e74c3c';
-            messageEl.textContent = 'Memproses pendaftaran...';
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await set(ref(db, 'users/' + cred.user.uid), {
+        name,
+        email,
+        role: 'user',
+        purchasedBooks: {},
+        createdAt: serverTimestamp()
+      });
 
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
+      message.className = 'message success';
+      message.textContent = 'Akun berhasil dibuat! Silakan masuk.';
+    } catch (err) {
+      message.className = 'message error';
+      let txt = 'Terjadi kesalahan';
+      if (err.code === 'auth/email-already-in-use') txt = 'Email sudah terdaftar';
+      else if (err.code === 'auth/weak-password') txt = 'Kata sandi terlalu lemah';
+      else if (err.code === 'auth/invalid-email') txt = 'Email tidak valid';
+      else txt = err.message;
+      message.textContent = txt;
+    }
+  });
 
-                // Simpan data user ke Realtime Database
-                await set(ref(db, 'users/' + user.uid), {
-                    name: name,
-                    email: email,
-                    role: 'user',
-                    purchasedBooks: {},
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp()
-                });
-
-                messageEl.style.color = '#27ae60';
-                messageEl.textContent = 'Akun berhasil dibuat! Silakan login di atas.';
-
-            } catch (error) {
-                let msg = 'Terjadi kesalahan';
-
-                if (error.code === 'auth/email-already-in-use') {
-                    msg = 'Email sudah terdaftar';
-                } else if (error.code === 'auth/weak-password') {
-                    msg = 'Kata sandi terlalu lemah (minimal 6 karakter)';
-                } else if (error.code === 'auth/invalid-email') {
-                    msg = 'Format email tidak valid';
-                } else {
-                    msg = error.message;
-                }
-
-                messageEl.textContent = msg;
-            }
-        });
-
-        // Optional: Jika user sudah login, arahkan ke home
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Jika sudah login tapi masih di halaman login → redirect
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1200);
-            }
-        });
-    </script>
+  // Jika sudah login → langsung ke home
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      setTimeout(() => location.replace('index.html'), 800);
+    }
+  });
+</script>
 
 </body>
 </html>
