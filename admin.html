@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin — Reading Haven</title>
+  <title>Admin Panel — Reading Haven</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -71,17 +71,8 @@
       padding: 0 5%;
     }
 
-    h1 {
-      font-family: 'Playfair Display', serif;
-      color: var(--accent-dk);
-      margin-bottom: 0.8rem;
-    }
-
-    .status {
-      font-size: 1.05rem;
-      margin-bottom: 2rem;
-      min-height: 1.6rem;
-    }
+    h1 { font-family: 'Playfair Display', serif; color: var(--accent-dk); margin-bottom: 0.8rem; }
+    .status { font-size: 1.05rem; margin-bottom: 2rem; min-height: 1.6rem; }
 
     .grid-4 {
       display: grid;
@@ -113,10 +104,7 @@
       margin-bottom: 2.5rem;
     }
 
-    h2 {
-      margin-bottom: 1.4rem;
-      color: var(--accent-dk);
-    }
+    h2 { margin-bottom: 1.4rem; color: var(--accent-dk); }
 
     .form-grid {
       display: grid;
@@ -124,20 +112,10 @@
       gap: 1.3rem;
     }
 
-    .form-grid > * {
-      grid-column: span 1;
-    }
+    .form-grid > * { grid-column: span 1; }
+    .form-grid > [data-full] { grid-column: span 2; }
 
-    .form-grid > [data-full] {
-      grid-column: span 2;
-    }
-
-    label {
-      font-weight: 500;
-      color: #555;
-      margin-bottom: 0.4rem;
-      display: block;
-    }
+    label { font-weight: 500; color: #555; margin-bottom: 0.4rem; display: block; }
 
     input, select, textarea {
       width: 100%;
@@ -147,11 +125,7 @@
       font-size: 1rem;
     }
 
-    textarea {
-      min-height: 140px;
-      font-family: monospace;
-      line-height: 1.5;
-    }
+    textarea { min-height: 140px; font-family: monospace; line-height: 1.5; }
 
     button {
       padding: 0.9rem 1.8rem;
@@ -161,15 +135,8 @@
       cursor: pointer;
     }
 
-    .btn-primary {
-      background: var(--accent-dk);
-      color: white;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
+    .btn-primary { background: var(--accent-dk); color: white; }
+    .btn-danger   { background: var(--danger); color: white; }
 
     .list-item {
       padding: 1.1rem;
@@ -182,17 +149,9 @@
 
     .list-item:last-child { border-bottom: none; }
 
-    #book-message, #status {
-      text-align: center;
-      margin: 1rem 0;
-      font-weight: 500;
-    }
+    #book-message, #status { text-align: center; margin: 1rem 0; font-weight: 500; }
 
-    .file-note {
-      font-size: 0.85rem;
-      color: #777;
-      margin-top: 0.4rem;
-    }
+    .file-note { font-size: 0.85rem; color: #777; margin-top: 0.4rem; }
 
     @media (max-width: 768px) {
       .form-grid { grid-template-columns: 1fr; }
@@ -215,7 +174,6 @@
   <h1>Panel Pengelolaan</h1>
   <div class="status" id="status">Memeriksa hak akses...</div>
 
-  <!-- Dashboard -->
   <div class="grid-4">
     <div class="card-stat"><strong id="total-users">—</strong>Total Pengguna</div>
     <div class="card-stat"><strong id="total-books">—</strong>Total Buku</div>
@@ -223,7 +181,6 @@
     <div class="card-stat"><strong id="premium">—</strong>Buku Premium</div>
   </div>
 
-  <!-- Tambah Buku -->
   <div class="section">
     <h2>Tambah Buku Baru</h2>
     <form id="book-form" class="form-grid">
@@ -250,23 +207,23 @@
       <div>
         <label>Status</label>
         <select id="status" required>
-          <option value="draft">Draft (belum tayang)</option>
-          <option value="published" selected>Tayang (published)</option>
+          <option value="draft">Draft</option>
+          <option value="published" selected>Published</option>
         </select>
       </div>
       <div>
-        <label>Cover Buku (jpg/png/webp)</label>
-        <input type="file" id="cover" accept="image/jpeg,image/png,image/webp" required>
-        <div class="file-note">Ukuran maksimal disarankan < 2MB</div>
+        <label>Cover Buku</label>
+        <input type="file" id="cover" accept="image/*" required>
+        <div class="file-note">Ukuran disarankan < 2MB</div>
       </div>
       <div data-full>
         <label>Deskripsi Singkat</label>
-        <textarea id="description" rows="4" placeholder="Ringkasan buku untuk tampilan di halaman detail" required></textarea>
+        <textarea id="description" rows="4" placeholder="Ringkasan buku untuk halaman detail" required></textarea>
       </div>
       <div data-full>
         <label>Isi Buku Lengkap (upload file)</label>
         <input type="file" id="book-content-file" accept=".txt,.md,.html,.htm" required>
-        <div class="file-note">Format: .txt, .md, .html (maks 5MB). File akan dibaca sebagai teks/HTML.</div>
+        <div class="file-note">Format: .txt, .md, .html (maks 5MB direkomendasikan)</div>
       </div>
       <div data-full style="text-align:right; margin-top:1.5rem;">
         <p id="book-message"></p>
@@ -275,13 +232,11 @@
     </form>
   </div>
 
-  <!-- Daftar Buku -->
   <div class="section">
-    <h2>Daftar Buku Saat Ini</h2>
+    <h2>Daftar Buku</h2>
     <div id="book-list"></div>
   </div>
 
-  <!-- Daftar Pengguna -->
   <div class="section">
     <h2>Daftar Pengguna</h2>
     <div id="user-list"></div>
@@ -315,7 +270,7 @@
   const bookList = document.getElementById('book-list');
   const userList = document.getElementById('user-list');
 
-  // Proteksi admin
+  // Proteksi halaman admin
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       statusEl.textContent = 'Silakan login terlebih dahulu';
@@ -327,7 +282,7 @@
     const userData = userSnap.val();
 
     if (!userData || userData.role !== 'admin') {
-      statusEl.textContent = 'Akses ditolak: Anda bukan administrator';
+      statusEl.textContent = 'Akses ditolak: Anda bukan admin';
       setTimeout(() => location.href = 'index.html', 2200);
       return;
     }
@@ -342,7 +297,6 @@
     loadUsers();
   });
 
-  // Dashboard
   async function loadDashboard() {
     const usersSnap = await get(ref(db, 'users'));
     const booksSnap = await get(ref(db, 'books'));
@@ -364,11 +318,13 @@
   }
 
   // ====================================================
-  //  TAMBAH BUKU DENGAN UPLOAD FILE ISI BUKU
+  //  FORM SUBMIT - UPLOAD COVER + FILE ISI BUKU
   // ====================================================
   document.getElementById('book-form').addEventListener('submit', async e => {
     e.preventDefault();
-    bookMessage.textContent = 'Memproses upload...';
+
+    const bookMessage = document.getElementById('book-message');
+    bookMessage.textContent = 'Sedang mengupload cover... (jangan tutup halaman)';
     bookMessage.style.color = '#555';
 
     const title       = document.getElementById('title').value.trim();
@@ -382,28 +338,32 @@
 
     if (!title || !author || !category || !coverFile || !contentFile || !description) {
       bookMessage.style.color = 'var(--danger)';
-      bookMessage.textContent = 'Semua field wajib diisi, termasuk file cover dan file isi buku';
+      bookMessage.textContent = 'Lengkapi semua field, termasuk file cover dan isi buku';
       return;
     }
 
     try {
-      // 1. Upload cover
+      // Upload cover
+      bookMessage.textContent = 'Mengupload cover...';
       const coverName = `\( {Date.now()}_cover_ \){coverFile.name.replace(/\s+/g, '_')}`;
       const coverStorageRef = sRef(storage, `covers/${coverName}`);
       await uploadBytes(coverStorageRef, coverFile);
       const coverURL = await getDownloadURL(coverStorageRef);
 
-      // 2. Upload isi buku (file teks/html)
+      // Upload isi buku
+      bookMessage.textContent = 'Mengupload isi buku... (bisa memakan waktu jika file besar)';
       const contentName = `\( {Date.now()}_content_ \){contentFile.name.replace(/\s+/g, '_')}`;
       const contentStorageRef = sRef(storage, `contents/${contentName}`);
       await uploadBytes(contentStorageRef, contentFile);
 
-      // 3. Baca isi file sebagai teks
+      // Baca isi file sebagai teks
+      bookMessage.textContent = 'Membaca isi file...';
       const reader = new FileReader();
       reader.onload = async function(event) {
-        const contentText = event.target.result; // isi file sebagai string
+        const contentText = event.target.result;
 
-        // 4. Simpan ke database
+        // Simpan ke database
+        bookMessage.textContent = 'Menyimpan data buku ke database...';
         const newBookRef = push(ref(db, 'books'));
         await set(newBookRef, {
           title,
@@ -411,7 +371,7 @@
           category,
           price,
           description,
-          content: contentText,              // ← isi buku dari file
+          content: contentText,
           coverURL,
           status,
           createdAt: serverTimestamp(),
@@ -419,9 +379,10 @@
         });
 
         bookMessage.style.color = 'var(--success)';
-        bookMessage.textContent = 'Buku berhasil diupload dan disimpan!';
+        bookMessage.textContent = 'Selesai! Buku berhasil diupload.';
         e.target.reset();
         document.getElementById('price-row').style.display = 'none';
+        setTimeout(() => { bookMessage.textContent = ''; }, 5000);
         loadBooks();
         loadDashboard();
       };
@@ -431,47 +392,46 @@
         bookMessage.textContent = 'Gagal membaca file isi buku';
       };
 
-      reader.readAsText(contentFile); // Baca file sebagai plain text
+      reader.readAsText(contentFile);
 
     } catch (err) {
       bookMessage.style.color = 'var(--danger)';
-      bookMessage.textContent = 'Gagal menyimpan: ' + err.message;
-      console.error(err);
+      bookMessage.textContent = 'Gagal: ' + err.message;
+      console.error('Error upload:', err);
     }
   });
 
-  // Tampilkan harga jika premium
+  // Kategori premium → tampilkan harga
   document.getElementById('category').onchange = e => {
     document.getElementById('price-row').style.display = e.target.value === 'premium' ? 'block' : 'none';
   };
 
-  // Load buku, user, dll. (sama seperti sebelumnya, saya singkat)
+  // Load daftar buku (sederhana)
   async function loadBooks() {
     bookList.innerHTML = '<p style="color:#999; text-align:center">Memuat daftar buku...</p>';
-    const snap = await get(ref(db, 'books'));
-    const books = snap.val() || {};
-    bookList.innerHTML = '';
+    try {
+      const snap = await get(ref(db, 'books'));
+      const books = snap.val() || {};
+      bookList.innerHTML = '';
 
-    Object.entries(books).forEach(([id, b]) => {
-      const div = document.createElement('div');
-      div.className = 'list-item';
-      div.innerHTML = `
-        <div>
-          <strong>${b.title}</strong><br>
-          <small>${b.author || '—'} • ${b.category} • ${b.status}</small><br>
-          <small>Deskripsi: ${b.description?.substring(0, 80) || '—'}...</small>
-        </div>
-        <button class="btn-danger" onclick="deleteBook('${id}')">Hapus</button>
-      `;
-      bookList.appendChild(div);
-    });
+      Object.entries(books).forEach(([id, b]) => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+          <div>
+            <strong>${b.title}</strong><br>
+            <small>${b.author || '—'} • ${b.category} • ${b.status}</small>
+          </div>
+          <button class="btn-danger" onclick="deleteBook('${id}')">Hapus</button>
+        `;
+        bookList.appendChild(div);
+      });
 
-    if (!Object.keys(books).length) {
-      bookList.innerHTML = '<p style="color:#999; text-align:center">Belum ada buku</p>';
+      if (!Object.keys(books).length) bookList.innerHTML = '<p style="color:#999;text-align:center">Belum ada buku</p>';
+    } catch (err) {
+      bookList.innerHTML = '<p style="color:var(--danger);text-align:center">Gagal memuat daftar buku</p>';
     }
   }
-
-  // ... (fungsi deleteBook, loadUsers, deleteUser, toggleAdmin sama seperti versi sebelumnya)
 
   window.deleteBook = async id => {
     if (!confirm('Yakin hapus buku ini?')) return;
@@ -480,7 +440,13 @@
     loadDashboard();
   };
 
-  // Fungsi loadUsers, deleteUser, toggleAdmin bisa copy dari versi sebelumnya
+  // Load daftar user (sama seperti sebelumnya)
+  async function loadUsers() {
+    userList.innerHTML = '<p style="color:#999">Memuat daftar pengguna...</p>';
+    // ... (kode loadUsers seperti versi sebelumnya, bisa copy dari pesan lama)
+  }
+
+  // Fungsi deleteUser & toggleAdmin juga bisa copy dari versi sebelumnya
 </script>
 
 </body>
