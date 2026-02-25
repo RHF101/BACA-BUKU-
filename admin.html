@@ -22,183 +22,49 @@
       --radius:    14px;
     }
 
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
 
-    .navbar {
-      background: white;
-      border-bottom: 1px solid rgba(168,181,162,0.2);
-      padding: 1.1rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+    .navbar { background: white; border-bottom: 1px solid rgba(168,181,162,0.2); padding: 1.1rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
 
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
-      color: var(--accent-dk);
-      font-weight: 600;
-    }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--accent-dk); font-weight: 600; }
 
-    .nav-links a, .nav-links button {
-      margin-left: 1.8rem;
-      color: var(--text-light);
-      text-decoration: none;
-      font-weight: 500;
-      cursor: pointer;
-    }
+    .nav-links a, .nav-links button { margin-left: 1.8rem; color: var(--text-light); text-decoration: none; font-weight: 500; cursor: pointer; }
 
-    .nav-links button {
-      background: var(--danger);
-      color: white;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 8px;
-    }
+    .nav-links button { background: var(--danger); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; }
 
-    main {
-      max-width: 1200px;
-      margin: 2.5rem auto;
-      padding: 0 5%;
-    }
+    main { max-width: 1200px; margin: 2.5rem auto; padding: 0 5%; }
 
-    h1 {
-      font-family: 'Playfair Display', serif;
-      color: var(--accent-dk);
-      margin-bottom: 0.8rem;
-    }
+    h1 { font-family: 'Playfair Display', serif; color: var(--accent-dk); margin-bottom: 0.8rem; }
 
-    .status {
-      font-size: 1.05rem;
-      margin-bottom: 2rem;
-      min-height: 1.6rem;
-    }
+    .status { font-size: 1.05rem; margin-bottom: 2rem; min-height: 1.6rem; }
 
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.4rem;
-      margin-bottom: 2.5rem;
-    }
+    .section { background: white; border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); margin-bottom: 2.5rem; }
 
-    .card-stat {
-      background: white;
-      border-radius: var(--radius);
-      padding: 1.6rem;
-      box-shadow: var(--shadow-sm);
-      text-align: center;
-    }
+    h2 { margin-bottom: 1.4rem; color: var(--accent-dk); }
 
-    .card-stat strong {
-      font-size: 2.1rem;
-      color: var(--accent-dk);
-      display: block;
-      margin: 0.4rem 0;
-    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; }
 
-    .section {
-      background: white;
-      border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: var(--shadow);
-      margin-bottom: 2.5rem;
-    }
+    .form-grid > * { grid-column: span 1; }
 
-    h2 {
-      margin-bottom: 1.4rem;
-      color: var(--accent-dk);
-    }
+    .form-grid > [data-full] { grid-column: span 2; }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.3rem;
-    }
+    label { font-weight: 500; color: #555; margin-bottom: 0.4rem; display: block; }
 
-    .form-grid > * {
-      grid-column: span 1;
-    }
+    input, select, textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid #e0ded9; border-radius: 10px; font-size: 1rem; }
 
-    .form-grid > [data-full] {
-      grid-column: span 2;
-    }
+    button { padding: 0.9rem 1.8rem; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
 
-    label {
-      font-weight: 500;
-      color: #555;
-      margin-bottom: 0.4rem;
-      display: block;
-    }
+    .btn-primary { background: var(--accent-dk); color: white; }
 
-    input, select, textarea {
-      width: 100%;
-      padding: 0.85rem 1rem;
-      border: 1px solid #e0ded9;
-      border-radius: 10px;
-      font-size: 1rem;
-    }
+    .btn-danger { background: var(--danger); color: white; }
 
-    textarea {
-      min-height: 140px;
-      font-family: monospace;
-      line-height: 1.5;
-    }
-
-    button {
-      padding: 0.9rem 1.8rem;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background: var(--accent-dk);
-      color: white;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-
-    .list-item {
-      padding: 1.1rem;
-      border-bottom: 1px solid #f0f0f0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-    }
+    .list-item { padding: 1.1rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 
     .list-item:last-child { border-bottom: none; }
 
-    #book-message, #status {
-      text-align: center;
-      margin: 1rem 0;
-      font-weight: 500;
-    }
+    #book-message, #status { text-align: center; margin: 1rem 0; font-weight: 500; }
 
-    .note {
-      font-size: 0.85rem;
-      color: #777;
-      margin-top: 0.4rem;
-    }
-
-    @media (max-width: 768px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .form-grid > [data-full] { grid-column: span 1; }
-      .grid-4 { grid-template-columns: 1fr; }
-    }
+    .note { font-size: 0.85rem; color: #777; margin-top: 0.4rem; }
   </style>
 </head>
 <body>
@@ -214,13 +80,6 @@
 <main>
   <h1>Panel Admin</h1>
   <div class="status" id="status">Memeriksa hak akses...</div>
-
-  <div class="grid-4">
-    <div class="card-stat"><strong id="total-users">—</strong>Total Pengguna</div>
-    <div class="card-stat"><strong id="total-books">—</strong>Total Buku</div>
-    <div class="card-stat"><strong id="gratis">—</strong>Buku Gratis</div>
-    <div class="card-stat"><strong id="premium">—</strong>Buku Premium</div>
-  </div>
 
   <div class="section">
     <h2>Tambah Buku Baru</h2>
@@ -254,13 +113,13 @@
       </div>
       <div>
         <label>URL Cover Buku (HTTPS)</label>
-        <input type="url" id="cover-url" placeholder="https://i.imgur.com/xxxxxx.jpg atau https://raw.githubusercontent.com/..." required>
-        <div class="note">Ambil dari Imgur, Postimages, GitHub Raw, atau situs lain yang support HTTPS</div>
+        <input type="url" id="cover-url" placeholder="https://i.imgur.com/xxxxxx.jpg" required>
+        <div class="note">Paste link dari Imgur, Postimages, atau GitHub Raw</div>
       </div>
       <div data-full>
-        <label>URL Isi Buku (HTML - HTTPS)</label>
-        <input type="url" id="content-url" placeholder="https://raw.githubusercontent.com/rhf101/BACA-BUKU-/main/contents/anakbintang.html" required>
-        <div class="note">Upload file .html ke GitHub repo kamu, klik Raw → copy link-nya</div>
+        <label>Isi Buku (.html dari komputer)</label>
+        <input type="file" id="book-content-file" accept=".html,.htm" required>
+        <div class="note">File .html akan dibaca dan disimpan sebagai teks aman di database</div>
       </div>
       <div data-full>
         <label>Deskripsi Singkat</label>
@@ -288,6 +147,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getDatabase, ref, get, set, remove, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
@@ -303,13 +163,13 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getDatabase(app);
+  const storage = getStorage(app);
 
   const statusEl = document.getElementById('status');
   const bookMessage = document.getElementById('book-message');
   const bookList = document.getElementById('book-list');
   const userList = document.getElementById('user-list');
 
-  // Proteksi admin
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       statusEl.textContent = 'Silakan login terlebih dahulu';
@@ -356,11 +216,11 @@
     document.getElementById('premium').textContent = p;
   }
 
-  // Submit form - semua pakai URL HTTPS
+  // Submit form - isi buku simpan sebagai teks
   document.getElementById('book-form').addEventListener('submit', async e => {
     e.preventDefault();
 
-    bookMessage.textContent = 'Memproses data...';
+    bookMessage.textContent = 'Memproses...';
     bookMessage.style.color = '#555';
 
     const title       = document.getElementById('title').value.trim();
@@ -369,23 +229,32 @@
     const price       = category === 'premium' ? Number(document.getElementById('price').value) || 0 : 0;
     const status      = document.getElementById('status').value;
     const coverURL    = document.getElementById('cover-url').value.trim();
-    const contentURL  = document.getElementById('content-url').value.trim();
+    const contentFile = document.getElementById('book-content-file').files[0];
     const description = document.getElementById('description').value.trim();
 
-    if (!title || !author || !category || !coverURL || !contentURL || !description) {
+    if (!title || !author || !category || !coverURL || !contentFile || !description) {
       bookMessage.style.color = 'var(--danger)';
       bookMessage.textContent = 'Lengkapi semua field';
       return;
     }
 
-    if (!coverURL.startsWith('https://') || !contentURL.startsWith('https://')) {
+    if (!coverURL.startsWith('https://')) {
       bookMessage.style.color = 'var(--danger)';
-      bookMessage.textContent = 'URL cover dan isi buku harus HTTPS dan valid';
+      bookMessage.textContent = 'URL cover harus HTTPS';
       return;
     }
 
     try {
-      bookMessage.textContent = 'Menyimpan buku ke database...';
+      bookMessage.textContent = 'Membaca isi buku...';
+
+      const contentText = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsText(contentFile);
+      });
+
+      bookMessage.textContent = 'Menyimpan buku...';
       const newBookRef = push(ref(db, 'books'));
       await set(newBookRef, {
         title,
@@ -393,15 +262,15 @@
         category,
         price,
         description,
-        contentURL,  // link ke file HTML
-        coverURL,    // link ke gambar
+        content: contentText,
+        coverURL,
         status,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
 
       bookMessage.style.color = 'var(--success)';
-      bookMessage.textContent = 'Selesai! Buku berhasil ditambahkan.';
+      bookMessage.textContent = 'Selesai! Buku berhasil disimpan.';
       e.target.reset();
       document.getElementById('price-row').style.display = 'none';
       loadBooks();
@@ -451,10 +320,8 @@
     loadDashboard();
   };
 
-  // Load user (sederhana)
   async function loadUsers() {
     userList.innerHTML = '<p style="color:#999">Memuat daftar pengguna...</p>';
-    // Kode loadUsers bisa ditambahkan kalau perlu
   }
 
   loadBooks();
